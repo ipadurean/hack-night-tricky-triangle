@@ -1,3 +1,5 @@
+
+require 'pry'
 class Board
 
   BOARD_SIZE = 5
@@ -5,7 +7,13 @@ class Board
   HOLE_MARKER = 'o'
 
   def initialize
-    @board = create_initial_board
+    @board = move(*user_input)
+  end
+
+  def user_input
+    puts "Please enter move"
+    gets.chomp.split("").map {|el| el.to_i}
+   
   end
 
   def create_initial_board
@@ -22,9 +30,11 @@ class Board
     positions = Array.new(number_of_spaces, PEG_MARKER)
     positions[0] = HOLE_MARKER
     positions
+    
   end
 
   def divide_board(positions)
+   
     board = []
     positions.each_with_index do |_a, i|
       board.push(positions.shift(i + 1))
@@ -33,6 +43,7 @@ class Board
   end
 
   def print_board
+    
     column_num = 1
     puts "               #{column_num}"
     @board.each_with_index do |row, index|
@@ -41,6 +52,7 @@ class Board
       print_board_row(row)
       print_column_number(column_num)
     end
+   @board
   end
 
   def print_board_row(row)
@@ -63,6 +75,34 @@ class Board
     rows[row_number]
   end
 
+    def move(a1, a2, b1, b2)
+      b = create_initial_board
+      if (b[a1][a2] == PEG_MARKER) && (b[b1][b2] == HOLE_MARKER)
+        b[a1][a2] =  HOLE_MARKER
+        b[b1][b2] =  PEG_MARKER
+          if (b1-a1) == 2 && (b2-a2) == 0
+             b[a1 + 1][a2] = HOLE_MARKER
+          elsif (b1-a1) == -2 && (b2-a2) == 0
+             b[a1 - 1][a2] = HOLE_MARKER
+          elsif (b1-a1) == 0 && (b2-a2) == 2
+             b[a1][a2 + 1] = HOLE_MARKER
+          elsif (b1-a1) == 0 && (b2-a2) == -2
+            b[a1][a2 - 1] = HOLE_MARKER
+          elsif (b1-a1) == -2 && (b2-a2) == -2
+             b[a1 - 1][a2 - 1] = HOLE_MARKER
+          elsif (b1-a1) == 2 && (b2-a2) == 2
+            b[a1 + 1][a2 + 1] = HOLE_MARKER
+          else
+        puts "this is not a valid move"
+          end
+      else
+        puts "this is not a valid move"
+    end
+  
+     b
+  end
+
 end
 
-Board.new.print_board
+board = Board.new
+board.print_board
